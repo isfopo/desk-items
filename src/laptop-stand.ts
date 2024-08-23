@@ -31,6 +31,14 @@ const posts = {
   ],
 };
 
+const chambers = {
+  diameter: 30,
+  points: [
+    [0, 0],
+    [40, 0],
+  ],
+};
+
 // A function declaration that returns geometry
 export const main = () => {
   const postGeo = () => {
@@ -39,6 +47,16 @@ export const main = () => {
       cylinder({
         height: base.width + base.delta,
         radius: posts.diameter / 2,
+      })
+    );
+  };
+
+  const chamberGeo = () => {
+    return rotate(
+      [0, Math.PI / 2, 0],
+      cylinder({
+        height: base.width + base.delta,
+        radius: chambers.diameter / 2,
       })
     );
   };
@@ -63,6 +81,7 @@ export const main = () => {
         })
       )
     ),
-    ...posts.points.map(([y, z]) => translate([0, y, z], postGeo()))
+    ...posts.points.map(([y, z]) => translate([0, y, z], postGeo())),
+    ...chambers.points.map(([y, z]) => translate([0, y, z], chamberGeo()))
   );
 };
