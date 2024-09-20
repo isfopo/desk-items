@@ -10,6 +10,7 @@ enum Part {
 interface PanelProps {
   width: number;
   beamThickness: number;
+  beamWidth: number;
 }
 
 interface BeamProps {
@@ -20,18 +21,14 @@ interface BeamProps {
 
 const part: Part = Part.Panel;
 
-const panel = ({ width, beamThickness }: PanelProps) => {
+const panel = ({ width, beamThickness, beamWidth }: PanelProps) => {
   return subtract(
     cuboid({
-      size: [width, width, beamThickness],
+      size: [width, width, beamWidth],
     }),
     cuboid({
-      size: [
-        width - beamThickness / 4,
-        width - beamThickness / 4,
-        beamThickness,
-      ],
-      center: [beamThickness / 8, beamThickness / 8, beamThickness / 4],
+      size: [width - beamThickness / 2, width - beamThickness / 2, beamWidth],
+      center: [beamThickness / 4, beamThickness / 4, beamWidth / 4],
     })
   );
 };
@@ -45,8 +42,9 @@ export const main = () => {
   switch (part as Part) {
     case Part.Panel:
       return panel({
-        width: 40,
+        width: 60,
         beamThickness: 10,
+        beamWidth: 20,
       });
     case Part.Beam:
       return beam({
