@@ -6,18 +6,34 @@ enum Part {
   Beam,
 }
 
+interface PanelProps {
+  width: number;
+  beamThickness: number;
+}
+
+interface BeamProps {
+  length: number;
+  thickness: number;
+}
+
 const part: Part = Part.Panel;
 
-const panel = () => {};
+const panel = ({}: PanelProps) => {};
 
-const beam = () => {};
+const beam = ({}: BeamProps) => {};
 
 // A function declaration that returns geometry
 export const main = () => {
   switch (part as Part) {
     case Part.Panel:
-      return panel();
+      return panel({
+        width: 40,
+        beamThickness: 10,
+      });
     case Part.Beam:
-      return beam();
+      return beam({
+        length: 180,
+        thickness: 10,
+      });
   }
 };
