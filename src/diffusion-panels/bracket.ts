@@ -19,7 +19,7 @@ interface BeamProps {
   thickness: number;
 }
 
-const part: Part = Part.Panel;
+const part: Part = Part.Beam;
 
 const panel = ({ width, beamThickness, beamWidth }: PanelProps) => {
   return subtract(
@@ -33,8 +33,8 @@ const panel = ({ width, beamThickness, beamWidth }: PanelProps) => {
   );
 };
 
-const beam = ({}: BeamProps) => {
-  return cube({ size: 10 });
+const beam = ({ width, length, thickness }: BeamProps) => {
+  return cuboid({ size: [length, width, thickness] });
 };
 
 // A function declaration that returns geometry
@@ -43,14 +43,14 @@ export const main = () => {
     case Part.Panel:
       return panel({
         width: 60,
-        beamThickness: 10,
-        beamWidth: 20,
+        beamThickness: 5,
+        beamWidth: 15,
       });
     case Part.Beam:
       return beam({
         length: 180,
-        width: 20,
-        thickness: 10,
+        width: 16,
+        thickness: 5,
       });
   }
 };
