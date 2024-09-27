@@ -18,6 +18,35 @@ const shell = {
 const panel = {
   width: convert(6, "in").to("mm"),
   thickness: convert(1 / 8, "in").to("mm"),
+  screws: {
+    countPerSide: 2,
+    diameter: convert(1 / 8, "in").to("mm"),
+    length: convert(1 / 2, "in").to("mm"),
+    inset: convert(1 / 2, "in").to("mm"),
+  },
+  jack: {
+    center: {
+      x: 0,
+      y: 0,
+    },
+    diameter: convert(1 / 2, "in").to("mm"),
+  },
+  pcbMount: {
+    center: {
+      x: 0,
+      y: 0,
+    },
+    width: convert(1 / 2, "in").to("mm"),
+    height: convert(1 / 2, "in").to("mm"),
+  },
+  power: {
+    center: {
+      x: 0,
+      y: 0,
+    },
+    width: convert(1 / 2, "in").to("mm"),
+    height: convert(1 / 2, "in").to("mm"),
+  },
 };
 
 const speaker = {
@@ -26,7 +55,7 @@ const speaker = {
     count: 4,
     diameter: convert(1 / 8, "in").to("mm"),
     length: convert(1 / 2, "in").to("mm"),
-    offset: convert(1 / 4, "in").to("mm"),
+    offset: convert(3 / 8, "in").to("mm"),
     spin: degToRad(45),
   },
 };
