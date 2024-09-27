@@ -7,7 +7,15 @@ import {
 } from "@jscad/modeling/src/primitives";
 import { degToRad } from "@jscad/modeling/src/utils";
 import convert from "convert";
+
 const TAU = Math.PI * 2;
+
+enum Part {
+  Body = "body",
+  Panel = "panel",
+}
+
+const part = Part.Panel as Part;
 
 const shell = {
   width: convert(13 / 2, "in").to("mm"),
@@ -60,7 +68,13 @@ const speaker = {
   },
 };
 
-export const main = () => {
+const panelGeo = () => {
+  return cuboid({
+    size: [panel.width, panel.width, panel.thickness],
+  });
+};
+
+const bodyGeo = () => {
   const shellGeo = ({ width, radius, thickness }: typeof shell) => {
     return subtract(
       roundedCuboid({
@@ -107,4 +121,13 @@ export const main = () => {
   };
 
   return subtract(shellGeo(shell), speakerGeo(speaker));
+};
+
+export const main = () => {
+  switch (part) {
+    case Part.Body:
+      return bodyGeo();
+    case Part.Panel:
+      return panelGeo();
+  }
 };
