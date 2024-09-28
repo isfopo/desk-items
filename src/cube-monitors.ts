@@ -15,6 +15,8 @@ enum Part {
   Panel = "panel",
 }
 
+const segments = 32 * Math.PI;
+
 const shell = {
   width: convert(5 + 3 / 4, "in").to("mm"),
   thickness: convert(5 / 8, "in").to("mm"),
@@ -128,6 +130,7 @@ const bodyGeo = () => {
           speaker.diameter / 2 + offset,
           -(shell.width - shell.thickness) / 2,
         ],
+        segments,
       });
 
       return [...Array(count).keys()].map((i) =>
@@ -140,6 +143,7 @@ const bodyGeo = () => {
         radius: diameter / 2,
         height: shell.thickness,
         center: [0, 0, -(shell.width - shell.thickness) / 2],
+        segments,
       }),
       screwsGeo(speaker.screws)
     );
