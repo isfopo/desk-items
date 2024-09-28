@@ -1,5 +1,5 @@
 import { subtract, union } from "@jscad/modeling/src/operations/booleans";
-import { rotate } from "@jscad/modeling/src/operations/transforms";
+import { rotate, translate } from "@jscad/modeling/src/operations/transforms";
 import {
   cuboid,
   cylinder,
@@ -15,22 +15,20 @@ enum Part {
   Panel = "panel",
 }
 
-const part = Part.Panel as Part;
-
 const shell = {
-  width: convert(13 / 2, "in").to("mm"),
-  thickness: convert(3 / 4, "in").to("mm"),
+  width: convert(5 + 3 / 4, "in").to("mm"),
+  thickness: convert(5 / 8, "in").to("mm"),
   radius: convert(1 / 4, "in").to("mm"),
 };
 
 const panel = {
-  width: convert(6, "in").to("mm"),
-  thickness: convert(1 / 8, "in").to("mm"),
+  width: convert(5 + 1 / 8, "in").to("mm"),
+  thickness: convert(1 / 4, "in").to("mm"),
   screws: {
     countPerSide: 2,
     diameter: convert(1 / 8, "in").to("mm"),
     length: convert(1 / 2, "in").to("mm"),
-    inset: convert(1 / 2, "in").to("mm"),
+    inset: convert(1, "in").to("mm"),
   },
   jack: {
     center: {
@@ -68,10 +66,34 @@ const speaker = {
   },
 };
 
+const panelScrewGeo = () => {
+  const screwGeo = (side: "port" | "starboard") => {
+    return cylinder({
+      height: panel.screws.length,
+      radius: panel.screws.diameter / 2,
+      center: [
+        (panel.width / 2 - panel.screws.inset) * (side === "port" ? 1 : -1),
+        (panel.width - shell.thickness) / 2,
+        0,
+      ],
+    });
+  };
+
+  return [...[...Array(4).keys()]].map((i) =>
+    rotate(
+      [0, 0, (i * TAU) / 4],
+      union(screwGeo("port"), screwGeo("starboard"))
+    )
+  );
+};
+
 const panelGeo = () => {
-  return cuboid({
-    size: [panel.width, panel.width, panel.thickness],
-  });
+  return subtract(
+    cuboid({
+      size: [panel.width, panel.width, panel.thickness],
+    }),
+    ...panelScrewGeo()
+  );
 };
 
 const bodyGeo = () => {
@@ -120,8 +142,19 @@ const bodyGeo = () => {
     );
   };
 
-  return subtract(shellGeo(shell), speakerGeo(speaker));
+  return subtract(
+    shellGeo(shell),
+    speakerGeo(speaker),
+    translate(
+      [0, 0, shell.width / 2],
+      cuboid({
+        size: [panel.width, panel.width, panel.thickness],
+      })
+    )
+  );
 };
+
+const part = Part.Panel as Part;
 
 export const main = () => {
   switch (part) {
