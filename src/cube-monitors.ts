@@ -26,7 +26,10 @@ const panel = {
   thickness: convert(1 / 4, "in").to("mm"),
   screws: {
     countPerSide: 2,
-    diameter: convert(1 / 8, "in").to("mm"),
+    diameter: {
+      inner: convert(1 / 8, "in").to("mm") - 1,
+      outer: convert(1 / 8, "in").to("mm"),
+    },
     length: convert(1 / 2, "in").to("mm"),
     inset: convert(1, "in").to("mm"),
   },
@@ -66,11 +69,11 @@ const speaker = {
   },
 };
 
-const panelScrewGeo = () => {
+const panelScrewGeo = (type: "inner" | "outer") => {
   const screwGeo = (side: "port" | "starboard") => {
     return cylinder({
       height: panel.screws.length,
-      radius: panel.screws.diameter / 2,
+      radius: panel.screws.diameter[type] / 2,
       center: [
         (panel.width / 2 - panel.screws.inset) * (side === "port" ? 1 : -1),
         (panel.width - shell.thickness) / 2,
@@ -92,7 +95,7 @@ const panelGeo = () => {
     cuboid({
       size: [panel.width, panel.width, panel.thickness],
     }),
-    ...panelScrewGeo()
+    ...panelScrewGeo("outer")
   );
 };
 
