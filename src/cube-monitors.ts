@@ -76,7 +76,7 @@ const panelScrewGeo = (type: "inner" | "outer") => {
       radius: panel.screws.diameter[type] / 2,
       center: [
         (panel.width / 2 - panel.screws.inset) * (side === "port" ? 1 : -1),
-        (panel.width - shell.thickness) / 2,
+        (panel.width - shell.thickness / 2) / 2,
         0,
       ],
     });
@@ -153,11 +153,15 @@ const bodyGeo = () => {
       cuboid({
         size: [panel.width, panel.width, panel.thickness],
       })
+    ),
+    translate(
+      [0, 0, shell.width / 2 - panel.thickness],
+      ...panelScrewGeo("inner")
     )
   );
 };
 
-const part = Part.Panel as Part;
+const part = Part.Body as Part;
 
 export const main = () => {
   switch (part) {
