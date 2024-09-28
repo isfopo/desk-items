@@ -23,7 +23,7 @@ const shell = {
 
 const panel = {
   width: convert(5 + 1 / 8, "in").to("mm"),
-  thickness: convert(1 / 4, "in").to("mm"),
+  thickness: convert(1 / 8, "in").to("mm"),
   screws: {
     countPerSide: 2,
     diameter: {
@@ -149,7 +149,7 @@ const bodyGeo = () => {
     shellGeo(shell),
     speakerGeo(speaker),
     translate(
-      [0, 0, shell.width / 2],
+      [0, 0, (shell.width - panel.thickness) / 2],
       cuboid({
         size: [panel.width, panel.width, panel.thickness],
       })
