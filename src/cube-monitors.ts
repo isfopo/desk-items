@@ -54,8 +54,7 @@ const panel = {
       x: 0,
       y: 0,
     },
-    width: convert(1 / 2, "in").to("mm"),
-    height: convert(1 / 2, "in").to("mm"),
+    diameter: convert(1 / 4, "in").to("mm"),
   },
 };
 
@@ -100,6 +99,14 @@ const panelGeo = () => {
     });
   };
 
+  const powerGeo = () => {
+    return cylinder({
+      height: panel.thickness,
+      radius: panel.power.diameter / 2,
+      center: [panel.power.center.x, panel.jack.center.y, 0],
+    });
+  };
+
   const jackGeo = () => {
     return cylinder({
       height: panel.thickness,
@@ -114,7 +121,8 @@ const panelGeo = () => {
     }),
     ...panelScrewGeo("outer"),
     volumePotGeo(),
-    jackGeo()
+    jackGeo(),
+    powerGeo()
   );
 };
 
