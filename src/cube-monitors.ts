@@ -37,18 +37,17 @@ const panel = {
   },
   jack: {
     center: {
-      x: 0,
+      x: -20,
       y: 0,
     },
     diameter: convert(1 / 2, "in").to("mm"),
   },
-  pcbMount: {
+  volumePot: {
     center: {
-      x: 0,
+      x: 20,
       y: 0,
     },
-    width: convert(1 / 2, "in").to("mm"),
-    height: convert(1 / 2, "in").to("mm"),
+    diameter: convert(1 / 4, "in").to("mm"),
   },
   power: {
     center: {
@@ -93,11 +92,19 @@ const panelScrewGeo = (type: "inner" | "outer") => {
 };
 
 const panelGeo = () => {
+  const volumePotGeo = () => {
+    return cylinder({
+      height: panel.thickness,
+      radius: panel.volumePot.diameter / 2,
+      center: [panel.volumePot.center.x, panel.volumePot.center.y, 0],
+    });
+  };
   return subtract(
     cuboid({
       size: [panel.width, panel.width, panel.thickness],
     }),
-    ...panelScrewGeo("outer")
+    ...panelScrewGeo("outer"),
+    volumePotGeo()
   );
 };
 
@@ -165,7 +172,7 @@ const bodyGeo = () => {
   );
 };
 
-const part = Part.Body as Part;
+const part = Part.Panel as Part;
 
 export const main = () => {
   switch (part) {
