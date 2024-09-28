@@ -99,12 +99,22 @@ const panelGeo = () => {
       center: [panel.volumePot.center.x, panel.volumePot.center.y, 0],
     });
   };
+
+  const jackGeo = () => {
+    return cylinder({
+      height: panel.thickness,
+      radius: panel.jack.diameter / 2,
+      center: [panel.jack.center.x, panel.jack.center.y, 0],
+    });
+  };
+
   return subtract(
     cuboid({
       size: [panel.width, panel.width, panel.thickness],
     }),
     ...panelScrewGeo("outer"),
-    volumePotGeo()
+    volumePotGeo(),
+    jackGeo()
   );
 };
 
