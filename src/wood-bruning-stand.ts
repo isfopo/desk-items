@@ -20,6 +20,7 @@ const candleHolder = {
 const woodHolder = {
   thickness: 5,
   diameter: 20 + roundRadius,
+  height: 50,
   tray: {
     height: 20,
     diameter: 100,
@@ -47,18 +48,32 @@ export const main = () => {
   };
 
   const woodHolderGeo = () => {
-    return expand(
-      { delta: roundRadius, corners: "round", segments },
+    return union(
+      subtract(
+        cylinder({
+          radius: woodHolder.diameter / 2 + woodHolder.thickness,
+          height: woodHolder.height,
+          center: [0, 0, woodHolder.height / 2],
+          segments,
+        }),
+        cylinder({
+          radius: (woodHolder.diameter - woodHolder.thickness / 2) / 2,
+          height: woodHolder.height - woodHolder.thickness,
+          center: [0, 0, (woodHolder.height + woodHolder.thickness) / 2],
+          segments,
+        })
+      ),
       subtract(
         cylinder({
           radius: woodHolder.tray.diameter / 2 + woodHolder.thickness,
           height: woodHolder.tray.height,
+          center: [0, 0, woodHolder.tray.height / 2],
           segments,
         }),
         cylinder({
           radius: woodHolder.tray.diameter / 2,
           height: woodHolder.tray.height - woodHolder.thickness,
-          center: [0, 0, woodHolder.thickness / 2],
+          center: [0, 0, (woodHolder.tray.height + woodHolder.thickness) / 2],
           segments,
         })
       )
