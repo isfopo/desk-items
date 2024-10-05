@@ -7,7 +7,7 @@ const PHI = 1.618033988749895;
 const baseHeight = 25;
 
 const roundRadius = 2;
-const segments = 10;
+const segments = 50;
 
 const candleHolder = {
   height: baseHeight * PHI,
@@ -30,7 +30,7 @@ const woodHolder = {
 export const main = () => {
   const candleHolderGeo = () => {
     return expand(
-      { delta: roundRadius, segments },
+      { delta: roundRadius, segments: 10 },
       subtract(
         cylinder({
           radius: candleHolder.diameter / 2 + candleHolder.thickness,
