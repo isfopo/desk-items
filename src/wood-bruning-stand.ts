@@ -1,29 +1,28 @@
 import { subtract, union } from "@jscad/modeling/src/operations/booleans";
 import { expand } from "@jscad/modeling/src/operations/expansions";
-import { extrudeLinear } from "@jscad/modeling/src/operations/extrusions";
-import {
-  circle,
-  cylinder,
-  roundedCuboid,
-} from "@jscad/modeling/src/primitives";
+import { translate } from "@jscad/modeling/src/operations/transforms";
+import { cylinder } from "@jscad/modeling/src/primitives";
+
+const PHI = 1.618033988749895;
+const baseHeight = 25;
 
 const roundRadius = 2;
-const segments = 10;
+const segments = 20;
 
 const candleHolder = {
-  height: 50,
-  depth: 30,
-  thickness: 20,
-  diameter: 50 + roundRadius * 2,
+  height: baseHeight * PHI,
+  depth: baseHeight - roundRadius,
+  thickness: 15,
+  diameter: 40 + roundRadius * 2,
 };
 
 const woodHolder = {
   thickness: 6 - roundRadius * 2,
-  diameter: 20 + roundRadius,
-  height: 50,
+  diameter: 20 + roundRadius * 2,
+  height: candleHolder.height * PHI,
   tray: {
-    height: 20,
-    diameter: 100,
+    height: baseHeight / PHI - roundRadius,
+    diameter: 2 * ((candleHolder.diameter / 2 + candleHolder.thickness) * PHI),
   },
 };
 
@@ -35,12 +34,13 @@ export const main = () => {
         cylinder({
           radius: candleHolder.diameter / 2 + candleHolder.thickness,
           height: candleHolder.height,
+          center: [0, 0, candleHolder.height / 2],
           segments,
         }),
         cylinder({
           radius: candleHolder.diameter / 2,
           height: candleHolder.depth,
-          center: [0, 0, (candleHolder.height - candleHolder.depth) / 2],
+          center: [0, 0, candleHolder.height - candleHolder.depth / 2],
           segments,
         })
       )
@@ -83,5 +83,9 @@ export const main = () => {
     );
   };
 
-  return woodHolderGeo();
+  const offset =
+    (woodHolder.tray.diameter + woodHolder.diameter - candleHolder.diameter) /
+    2;
+
+  return union(translate([0, offset, 0], candleHolderGeo()), woodHolderGeo());
 };
