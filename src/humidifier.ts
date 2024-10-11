@@ -20,7 +20,7 @@ const candleHolder = {
   supports: {
     count: 4,
     diameter: (baseHeight / 2) * PHI,
-    height: baseHeight * PHI,
+    height: 3 * baseHeight * PHI,
   },
 };
 
@@ -31,13 +31,22 @@ const bowl = {
 };
 
 export const main = () => {
-  const supportGeo = () => {
-    return map(candleHolder.supports.count, (i) =>
+  const supportGeo = ({
+    count,
+    diameter,
+    height,
+  }: typeof candleHolder.supports) => {
+    return map(count, (i) =>
       rotate(
-        [0, 0, 0],
+        [0, 0, (i * (Math.PI * 2)) / count],
         cylinder({
-          height: candleHolder.supports.height,
-          radius: candleHolder.supports.diameter / 2,
+          height: height,
+          radius: diameter / 2,
+          center: [
+            candleHolder.diameter / 2 + candleHolder.thickness,
+            0,
+            height / 2,
+          ],
           segments,
         })
       )
@@ -60,7 +69,7 @@ export const main = () => {
           segments,
         })
       ),
-      supportGeo()
+      supportGeo(candleHolder.supports)
     );
   };
 
