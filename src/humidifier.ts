@@ -16,7 +16,7 @@ const candleHolder = {
   height: baseHeight * PHI,
   depth: baseHeight - roundRadius,
   diameter: 40 + roundRadius * 2,
-  thickness: 20 / PHI,
+  thickness: 30 / PHI,
   supports: {
     count: 4,
     diameter: (baseHeight / 2) * PHI,
