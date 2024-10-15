@@ -1,9 +1,17 @@
-import { concat, fromPoints } from "@jscad/modeling/src/geometries/path2";
+import {
+  appendArc,
+  appendPoints,
+  concat,
+  fromPoints,
+} from "@jscad/modeling/src/geometries/path2";
+import { sin } from "@jscad/modeling/src/maths/utils";
 import { union } from "@jscad/modeling/src/operations/booleans";
 import { expand } from "@jscad/modeling/src/operations/expansions";
 import { extrudeLinear } from "@jscad/modeling/src/operations/extrusions";
+import { rotate, translate } from "@jscad/modeling/src/operations/transforms";
 import { arc, circle, rectangle } from "@jscad/modeling/src/primitives";
 import { degToRad } from "@jscad/modeling/src/utils";
+import { pointOnCircle } from "./helpers";
 const TAU = 2 * Math.PI;
 
 const mount = {
@@ -11,6 +19,7 @@ const mount = {
   diameter: 47,
   lip: {
     radius: 5,
+    angle: degToRad(90),
   },
   opening: degToRad(90),
   thickness: 3,
@@ -39,8 +48,8 @@ export const main = () => {
   return extrudeLinear(
     { height: mount.height },
     union(
-      expand({ delta: mount.thickness }, arcPoints),
-      expand({ delta: mount.thickness }, holderPoints)
+      expand({ delta: mount.thickness, corners: "round" }, arcPoints),
+      expand({ delta: mount.thickness, corners: "round" }, holderPoints)
     )
   );
 };
