@@ -30,7 +30,6 @@ const mount = {
 };
 
 export const main = () => {
-  // Create the arc as an array of points
   const arcPoints = arc({
     radius: mount.diameter / 2,
     startAngle: mount.opening / 2,
@@ -44,7 +43,6 @@ export const main = () => {
     [-mount.diameter / 2, mount.holder.width / 2],
   ]);
 
-  // Now you can pass it to the union function!
   return extrudeLinear(
     { height: mount.height },
     union(
