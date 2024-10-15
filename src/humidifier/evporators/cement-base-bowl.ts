@@ -1,7 +1,7 @@
 import { subtract, union } from "@jscad/modeling/src/operations/booleans";
 import { rotate } from "@jscad/modeling/src/operations/transforms";
 import { cylinder, ellipsoid } from "@jscad/modeling/src/primitives";
-import { map } from "./helpers";
+import { map } from "../../helpers";
 
 const PHI = 1.618033988749895;
 const baseHeight = 20;
