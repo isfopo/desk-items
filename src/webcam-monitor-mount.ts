@@ -5,6 +5,8 @@ import { mirrorY, translate } from "@jscad/modeling/src/operations/transforms";
 import { arc } from "@jscad/modeling/src/primitives";
 import { degToRad } from "@jscad/modeling/src/utils";
 import { outline } from "./helpers";
+//@ts-ignore
+import { honeycomb as honeycombGeo } from "jscad-honeycomb";
 
 const TAU = 2 * Math.PI;
 
@@ -46,6 +48,7 @@ export const main = () => {
     ],
     [0, mount.diameter / 2 + mount.thickness / 2],
   ]);
+
   return extrudeLinear(
     { height: mount.height },
     outline({ delta: mount.thickness, corners: "round" }, arcPoints),
