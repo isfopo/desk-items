@@ -10,7 +10,7 @@ import { rotate } from "@jscad/modeling/src/operations/transforms";
 const TAU = 2 * Math.PI;
 
 const mount = {
-  height: 50,
+  height: 30,
   diameter: 47,
   opening: degToRad(90),
   thickness: 3,
