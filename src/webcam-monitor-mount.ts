@@ -7,6 +7,7 @@ import { degToRad } from "@jscad/modeling/src/utils";
 import { outline } from "./helpers";
 //@ts-ignore
 import { honeycomb as honeycombGeo } from "jscad-honeycomb";
+import { angle } from "@jscad/modeling/src/maths/vec2";
 
 const TAU = 2 * Math.PI;
 
@@ -17,8 +18,9 @@ const mount = {
   thickness: 3,
   holder: {
     reach: 20,
+    angle: degToRad(30),
     length: 10,
-    width: 36,
+    width: 38,
   },
 };
 
@@ -29,21 +31,22 @@ export const main = () => {
     endAngle: TAU - mount.opening / 2,
   });
 
+  const mountOffset =
+    -mount.diameter / 2 - mount.thickness - mount.holder.reach;
+
   const holderPoints = translate(
-    [-mount.diameter / 2 - mount.thickness - mount.holder.reach],
+    [0],
     fromPoints({ closed: true }, [
-      [0, -mount.holder.width / 2],
-      [0 - mount.holder.length, -mount.holder.width / 2],
-      [0 - mount.holder.length, mount.holder.width / 2],
-      [0, mount.holder.width / 2],
+      [mountOffset, -mount.holder.width / 2],
+      [mountOffset - mount.holder.length, -mount.holder.width / 2],
+      [mountOffset - mount.holder.length, mount.holder.width / 2],
+      [mountOffset, mount.holder.width / 2],
     ])
   );
+
   const bracePoints = fromPoints({ closed: false }, [
     [
-      -mount.diameter / 2 -
-        mount.holder.length -
-        mount.thickness -
-        mount.holder.reach,
+      holderPoints.points[0][0] - mount.thickness / 2,
       mount.holder.width / 2 + mount.thickness / 2,
     ],
     [0, mount.diameter / 2 + mount.thickness / 2],
