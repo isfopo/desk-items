@@ -1,12 +1,7 @@
 import { fromPoints } from "@jscad/modeling/src/geometries/path2";
-import { union } from "@jscad/modeling/src/operations/booleans";
-import { expand, offset } from "@jscad/modeling/src/operations/expansions";
+import { expand } from "@jscad/modeling/src/operations/expansions";
 import { extrudeLinear } from "@jscad/modeling/src/operations/extrusions";
-import {
-  mirror,
-  mirrorY,
-  translate,
-} from "@jscad/modeling/src/operations/transforms";
+import { mirrorY, translate } from "@jscad/modeling/src/operations/transforms";
 import { arc } from "@jscad/modeling/src/primitives";
 import { degToRad } from "@jscad/modeling/src/utils";
 import { outline } from "./helpers";
@@ -19,6 +14,7 @@ const mount = {
   opening: degToRad(90),
   thickness: 3,
   holder: {
+    reach: 20,
     length: 10,
     width: 36,
   },
@@ -32,7 +28,7 @@ export const main = () => {
   });
 
   const holderPoints = translate(
-    [-mount.diameter / 2 - mount.thickness],
+    [-mount.diameter / 2 - mount.thickness - mount.holder.reach],
     fromPoints({ closed: true }, [
       [0, -mount.holder.width / 2],
       [0 - mount.holder.length, -mount.holder.width / 2],
@@ -42,7 +38,10 @@ export const main = () => {
   );
   const bracePoints = fromPoints({ closed: false }, [
     [
-      -mount.diameter / 2 - mount.holder.length - mount.thickness,
+      -mount.diameter / 2 -
+        mount.holder.length -
+        mount.thickness -
+        mount.holder.reach,
       mount.holder.width / 2 + mount.thickness / 2,
     ],
     [0, mount.diameter / 2 + mount.thickness / 2],
