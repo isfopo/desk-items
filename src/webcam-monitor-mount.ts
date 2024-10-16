@@ -1,17 +1,9 @@
 import { fromPoints } from "@jscad/modeling/src/geometries/path2";
 import { expand } from "@jscad/modeling/src/operations/expansions";
 import { extrudeLinear } from "@jscad/modeling/src/operations/extrusions";
-import {
-  mirrorY,
-  rotate,
-  translate,
-} from "@jscad/modeling/src/operations/transforms";
 import { arc } from "@jscad/modeling/src/primitives";
 import { degToRad } from "@jscad/modeling/src/utils";
-import { outline } from "./helpers";
-//@ts-ignore
-import { honeycomb as honeycombGeo } from "jscad-honeycomb";
-import { angle } from "@jscad/modeling/src/maths/vec2";
+import { outline, rotatePoints } from "./helpers";
 
 const TAU = 2 * Math.PI;
 
@@ -40,12 +32,18 @@ export const main = () => {
 
   const rotate = 4;
 
-  const holderPoints = fromPoints({ closed: true }, [
-    [mountOffset, -mount.holder.width / 2],
-    [mountOffset + -mount.holder.length, -mount.holder.width / 2],
-    [mountOffset + -mount.holder.length, mount.holder.width / 2],
-    [mountOffset, mount.holder.width / 2],
-  ]);
+  const holderPoints = fromPoints(
+    { closed: true },
+    rotatePoints(
+      [
+        [mountOffset, -mount.holder.width / 2],
+        [mountOffset + -mount.holder.length, -mount.holder.width / 2],
+        [mountOffset + -mount.holder.length, mount.holder.width / 2],
+        [mountOffset, mount.holder.width / 2],
+      ],
+      { angle: mount.holder.angle, origin: [mountOffset, 0] }
+    )
+  );
 
   const bracePoints = {
     left: fromPoints({ closed: false }, [

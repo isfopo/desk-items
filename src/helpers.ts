@@ -40,16 +40,78 @@ export const outline = (
     )
   );
 
+class CartesianCoord {
+  x: number;
+  y: number;
+  constructor(x: number, y: number) {
+    this.x = x;
+    this.y = y;
+  }
+
+  toPolarCoord(origin: [number, number] = [0, 0]): PolarCoord {
+    return new PolarCoord(
+      Math.sqrt(this.x * this.x + this.y * this.y),
+      Math.atan2(this.y, this.x),
+      origin
+    );
+  }
+
+  toPoint(): [number, number] {
+    return [this.x, this.y];
+  }
+}
+
+class PolarCoord {
+  r: number;
+  theta: number;
+  origin: [number, number];
+
+  // r = r of circle
+  // theta = angle in radians, measured from positive X axis
+  // thetaDegrees = angle in degrees
+  constructor(r: number, theta: number, origin: [number, number] = [0, 0]) {
+    this.r = r;
+    this.theta = theta;
+    this.origin = origin;
+  }
+
+  set thetaDegrees(value) {
+    this.theta = (value * 2 * Math.PI) / 360;
+  }
+
+  get thetaDegrees() {
+    return (this.theta * 360) / (Math.PI * 2);
+  }
+
+  toCartesianCoord() {
+    return new CartesianCoord(
+      this.r * Math.cos(this.theta),
+      this.r * Math.sin(this.theta)
+    );
+  }
+
+  rotate(angle: number) {
+    this.theta += angle;
+    return this;
+  }
+
+  toPoint(): [number, number] {
+    return [this.r, this.theta];
+  }
+}
+
 export const rotatePoint = (
   point: [number, number],
   { angle, origin }: { angle: number; origin: [number, number] } = {
     angle: 0,
     origin: [0, 0],
   }
-): [number, number] => [
-  point[0] * Math.cos(angle) - point[1] * Math.sin(angle) + origin[0],
-  point[1] * Math.sin(angle) + point[0] * Math.cos(angle) + origin[1],
-];
+): [number, number] =>
+  new CartesianCoord(...point)
+    .toPolarCoord(origin)
+    .rotate(angle)
+    .toCartesianCoord()
+    .toPoint();
 
 export const rotatePoints = (
   points: [number, number][],
