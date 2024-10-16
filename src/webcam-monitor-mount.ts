@@ -63,6 +63,20 @@ export const main = () => {
       ],
       [0, -mount.diameter / 2 + -mount.thickness / 2],
     ]),
+    middle: fromPoints({ closed: false }, [
+      [
+        holderPoints.points[3][0] + mount.thickness / 2,
+        holderPoints.points[3][1] - mount.thickness / 2,
+      ],
+      [-mount.diameter / 2 + -mount.thickness / 2, 0],
+    ]),
+    otherMiddle: fromPoints({ closed: false }, [
+      [
+        holderPoints.points[0][0] + mount.thickness / 2,
+        holderPoints.points[0][1] - mount.thickness / 2,
+      ],
+      [-mount.diameter / 2 + -mount.thickness / 2, 0],
+    ]),
   };
 
   return union(
@@ -76,7 +90,15 @@ export const main = () => {
         { height: mount.height },
         outline({ delta: mount.thickness, corners: "round" }, holderPoints),
         expand({ delta: mount.thickness, corners: "round" }, bracePoints.left),
-        expand({ delta: mount.thickness, corners: "round" }, bracePoints.right)
+        expand({ delta: mount.thickness, corners: "round" }, bracePoints.right),
+        expand(
+          { delta: mount.thickness, corners: "round" },
+          bracePoints.middle
+        ),
+        expand(
+          { delta: mount.thickness, corners: "round" },
+          bracePoints.otherMiddle
+        )
       )
     )
   );
