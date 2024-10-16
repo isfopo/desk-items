@@ -2,7 +2,11 @@ import { fromPoints } from "@jscad/modeling/src/geometries/path2";
 import { union } from "@jscad/modeling/src/operations/booleans";
 import { expand, offset } from "@jscad/modeling/src/operations/expansions";
 import { extrudeLinear } from "@jscad/modeling/src/operations/extrusions";
-import { translate } from "@jscad/modeling/src/operations/transforms";
+import {
+  mirror,
+  mirrorY,
+  translate,
+} from "@jscad/modeling/src/operations/transforms";
 import { arc } from "@jscad/modeling/src/primitives";
 import { degToRad } from "@jscad/modeling/src/utils";
 import { outline } from "./helpers";
@@ -36,10 +40,18 @@ export const main = () => {
       [0, mount.holder.width / 2],
     ])
   );
-
+  const bracePoints = fromPoints({ closed: false }, [
+    [
+      -mount.diameter / 2 - mount.holder.length - mount.thickness,
+      mount.holder.width / 2 + mount.thickness / 2,
+    ],
+    [0, mount.diameter / 2 + mount.thickness / 2],
+  ]);
   return extrudeLinear(
     { height: mount.height },
     outline({ delta: mount.thickness, corners: "round" }, arcPoints),
-    outline({ delta: mount.thickness, corners: "round" }, holderPoints)
+    outline({ delta: mount.thickness, corners: "round" }, holderPoints),
+    expand({ delta: mount.thickness, corners: "round" }, bracePoints),
+    mirrorY(expand({ delta: mount.thickness, corners: "round" }, bracePoints))
   );
 };
