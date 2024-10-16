@@ -1,17 +1,10 @@
-import {
-  appendArc,
-  appendPoints,
-  concat,
-  fromPoints,
-} from "@jscad/modeling/src/geometries/path2";
-import { sin } from "@jscad/modeling/src/maths/utils";
+import { fromPoints } from "@jscad/modeling/src/geometries/path2";
 import { union } from "@jscad/modeling/src/operations/booleans";
 import { expand } from "@jscad/modeling/src/operations/expansions";
 import { extrudeLinear } from "@jscad/modeling/src/operations/extrusions";
-import { rotate, translate } from "@jscad/modeling/src/operations/transforms";
-import { arc, circle, rectangle } from "@jscad/modeling/src/primitives";
+import { arc } from "@jscad/modeling/src/primitives";
 import { degToRad } from "@jscad/modeling/src/utils";
-import { pointOnCircle } from "./helpers";
+
 const TAU = 2 * Math.PI;
 
 const mount = {
