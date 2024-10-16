@@ -1,5 +1,11 @@
-import { Geom2, Geom3 } from "@jscad/modeling/src/geometries/types";
+import { Geom2, Geom3, Path2 } from "@jscad/modeling/src/geometries/types";
 import { angle } from "@jscad/modeling/src/maths/vec2";
+import {
+  expand,
+  ExpandOptions,
+  offset,
+  OffsetOptions,
+} from "@jscad/modeling/src/operations/expansions";
 
 export const map = <T extends Geom2 | Geom3>(
   count: number,
@@ -21,3 +27,15 @@ export const pointOnCircle = (
   radius * Math.sin(angle) * (flipX ? -1 : 1),
   radius * Math.cos(angle) * (flipY ? -1 : 1),
 ];
+
+export const outline = (
+  options: OffsetOptions & ExpandOptions,
+  geometry: Path2
+) =>
+  expand(
+    options,
+    offset(
+      { ...options, delta: options.delta ? options.delta / 2 : 1 },
+      geometry
+    )
+  );
