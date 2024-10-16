@@ -4,6 +4,8 @@ import { extrudeLinear } from "@jscad/modeling/src/operations/extrusions";
 import { arc } from "@jscad/modeling/src/primitives";
 import { degToRad } from "@jscad/modeling/src/utils";
 import { outline, rotatePoints } from "./helpers";
+import { union } from "@jscad/modeling/src/operations/booleans";
+import { rotate } from "@jscad/modeling/src/operations/transforms";
 
 const TAU = 2 * Math.PI;
 
@@ -30,20 +32,12 @@ export const main = () => {
   const mountOffset =
     -mount.diameter / 2 - mount.thickness - mount.holder.reach;
 
-  const rotate = 4;
-
-  const holderPoints = fromPoints(
-    { closed: true },
-    rotatePoints(
-      [
-        [mountOffset, -mount.holder.width / 2],
-        [mountOffset + -mount.holder.length, -mount.holder.width / 2],
-        [mountOffset + -mount.holder.length, mount.holder.width / 2],
-        [mountOffset, mount.holder.width / 2],
-      ],
-      { angle: mount.holder.angle, origin: [mountOffset, 0] }
-    )
-  );
+  const holderPoints = fromPoints({ closed: true }, [
+    [mountOffset, -mount.holder.width / 2],
+    [mountOffset + -mount.holder.length, -mount.holder.width / 2],
+    [mountOffset + -mount.holder.length, mount.holder.width / 2],
+    [mountOffset, mount.holder.width / 2],
+  ]);
 
   const bracePoints = {
     left: fromPoints({ closed: false }, [
@@ -62,11 +56,19 @@ export const main = () => {
     ]),
   };
 
-  return extrudeLinear(
-    { height: mount.height },
-    outline({ delta: mount.thickness, corners: "round" }, arcPoints),
-    outline({ delta: mount.thickness, corners: "round" }, holderPoints),
-    expand({ delta: mount.thickness, corners: "round" }, bracePoints.left),
-    expand({ delta: mount.thickness, corners: "round" }, bracePoints.right)
+  return union(
+    extrudeLinear(
+      { height: mount.height },
+      outline({ delta: mount.thickness, corners: "round" }, arcPoints)
+    ),
+    rotate(
+      [0, 0, mount.holder.angle],
+      extrudeLinear(
+        { height: mount.height },
+        outline({ delta: mount.thickness, corners: "round" }, holderPoints),
+        expand({ delta: mount.thickness, corners: "round" }, bracePoints.left),
+        expand({ delta: mount.thickness, corners: "round" }, bracePoints.right)
+      )
+    )
   );
 };
