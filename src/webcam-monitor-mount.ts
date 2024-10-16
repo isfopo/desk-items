@@ -1,7 +1,11 @@
 import { fromPoints } from "@jscad/modeling/src/geometries/path2";
 import { expand } from "@jscad/modeling/src/operations/expansions";
 import { extrudeLinear } from "@jscad/modeling/src/operations/extrusions";
-import { mirrorY, translate } from "@jscad/modeling/src/operations/transforms";
+import {
+  mirrorY,
+  rotate,
+  translate,
+} from "@jscad/modeling/src/operations/transforms";
 import { arc } from "@jscad/modeling/src/primitives";
 import { degToRad } from "@jscad/modeling/src/utils";
 import { outline } from "./helpers";
@@ -34,29 +38,37 @@ export const main = () => {
   const mountOffset =
     -mount.diameter / 2 - mount.thickness - mount.holder.reach;
 
-  const holderPoints = translate(
-    [0],
-    fromPoints({ closed: true }, [
-      [mountOffset, -mount.holder.width / 2],
-      [mountOffset - mount.holder.length, -mount.holder.width / 2],
-      [mountOffset - mount.holder.length, mount.holder.width / 2],
-      [mountOffset, mount.holder.width / 2],
-    ])
-  );
+  const rotate = 4;
 
-  const bracePoints = fromPoints({ closed: false }, [
-    [
-      holderPoints.points[0][0] - mount.thickness / 2,
-      mount.holder.width / 2 + mount.thickness / 2,
-    ],
-    [0, mount.diameter / 2 + mount.thickness / 2],
+  const holderPoints = fromPoints({ closed: true }, [
+    [mountOffset, -mount.holder.width / 2],
+    [mountOffset + -mount.holder.length, -mount.holder.width / 2],
+    [mountOffset + -mount.holder.length, mount.holder.width / 2],
+    [mountOffset, mount.holder.width / 2],
   ]);
+
+  const bracePoints = {
+    left: fromPoints({ closed: false }, [
+      [
+        holderPoints.points[0][0] - mount.thickness / 2,
+        mount.holder.width / 2 + mount.thickness / 2,
+      ],
+      [0, mount.diameter / 2 + mount.thickness / 2],
+    ]),
+    right: fromPoints({ closed: false }, [
+      [
+        holderPoints.points[1][0] + mount.thickness / 2,
+        -mount.holder.width / 2 + -mount.thickness / 2,
+      ],
+      [0, -mount.diameter / 2 + -mount.thickness / 2],
+    ]),
+  };
 
   return extrudeLinear(
     { height: mount.height },
     outline({ delta: mount.thickness, corners: "round" }, arcPoints),
     outline({ delta: mount.thickness, corners: "round" }, holderPoints),
-    expand({ delta: mount.thickness, corners: "round" }, bracePoints),
-    mirrorY(expand({ delta: mount.thickness, corners: "round" }, bracePoints))
+    expand({ delta: mount.thickness, corners: "round" }, bracePoints.left),
+    expand({ delta: mount.thickness, corners: "round" }, bracePoints.right)
   );
 };

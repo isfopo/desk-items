@@ -39,3 +39,22 @@ export const outline = (
       geometry
     )
   );
+
+export const rotatePoint = (
+  point: [number, number],
+  { angle, origin }: { angle: number; origin: [number, number] } = {
+    angle: 0,
+    origin: [0, 0],
+  }
+): [number, number] => [
+  point[0] * Math.cos(angle) - point[1] * Math.sin(angle) + origin[0],
+  point[1] * Math.sin(angle) + point[0] * Math.cos(angle) + origin[1],
+];
+
+export const rotatePoints = (
+  points: [number, number][],
+  { angle, origin }: { angle: number; origin: [number, number] } = {
+    angle: 0,
+    origin: [0, 0],
+  }
+): [number, number][] => points.map((p) => rotatePoint(p, { angle, origin }));
