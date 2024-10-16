@@ -49,9 +49,12 @@ class CartesianCoord {
   }
 
   toPolarCoord(origin: [number, number] = [0, 0]): PolarCoord {
+    const adjustedX = this.x - origin[0];
+    const adjustedY = this.y - origin[1];
+
     return new PolarCoord(
-      Math.sqrt(this.x * this.x + this.y * this.y),
-      Math.atan2(this.y, this.x),
+      Math.sqrt(adjustedX * adjustedX + adjustedY * adjustedY),
+      Math.atan2(adjustedY, adjustedX),
       origin
     );
   }
