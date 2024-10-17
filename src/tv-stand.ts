@@ -1,11 +1,15 @@
+import { Geom3 } from "@jscad/modeling/src/geometries/types";
 import { Vec3 } from "@jscad/modeling/src/maths/types";
 import { subtract, union } from "@jscad/modeling/src/operations/booleans";
 import { extrudeLinear } from "@jscad/modeling/src/operations/extrusions";
+import { rotate, translate } from "@jscad/modeling/src/operations/transforms";
 import {
   cylinder,
   roundedCuboid,
   roundedRectangle,
 } from "@jscad/modeling/src/primitives";
+// @ts-ignore
+import { bolt } from "jscad-threadlib";
 
 const stand = {
   thickness: 10,
@@ -14,6 +18,10 @@ const stand = {
     height: 50,
     width: 50,
     thickness: 30,
+    thread: {
+      thread: "28-UN-5/8-ext",
+      turns: 20,
+    },
   },
   screws: {
     diameter: 5,
@@ -68,16 +76,25 @@ const panelGeo = subtract(
   screwsGeo
 );
 
-const mountGeo = roundedCuboid({
-  roundRadius: stand.screws.diameter / 2,
-  size: [
-    stand.mount.width,
-    stand.mount.height + stand.thickness,
-    stand.mount.thickness,
-  ],
-  center: [0, 0, (stand.mount.thickness + stand.thickness) / 2],
-});
+const standThread = translate(
+  [0, -stand.mount.height / 2, stand.mount.thickness / 2 + stand.thickness],
+  rotate([Math.PI / 2, 0, 0], bolt(stand.mount.thread))
+);
+
+const mountGeo = subtract(
+  roundedCuboid({
+    roundRadius: stand.screws.diameter / 2,
+    size: [
+      stand.mount.width,
+      stand.mount.height,
+      stand.mount.thickness + stand.thickness,
+    ],
+    center: [0, 0, stand.mount.thickness / 2 + stand.thickness],
+  }),
+  standThread as Geom3
+);
 
 export const main = () => {
+  // return standThread as Geom3;
   return union(panelGeo, mountGeo);
 };
