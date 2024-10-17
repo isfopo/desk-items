@@ -1,9 +1,14 @@
 import { degToRad } from "@jscad/modeling/src/utils";
 import convert from "convert";
 import { map } from "./helpers";
-import { cylinder } from "@jscad/modeling/src/primitives";
+import { cylinder, cylinderElliptic } from "@jscad/modeling/src/primitives";
 import { rotate, translate } from "@jscad/modeling/src/operations/transforms";
-import { subtract, union } from "@jscad/modeling/src/operations/booleans";
+import {
+  subtract,
+  union,
+  union,
+  union,
+} from "@jscad/modeling/src/operations/booleans";
 import { hull } from "@jscad/modeling/src/operations/hulls";
 
 const TAU = Math.PI * 2;
@@ -20,8 +25,11 @@ const rack = {
   screws: {
     count: 2,
     spread: convert(3, "in").to("mm"),
-    diameter: convert(1 / 8, "in").to("mm"),
-    head: convert(1 / 4, "in").to("mm"),
+    diameter: convert(3 / 16, "in").to("mm"),
+    head: {
+      height: convert(1 / 8, "in").to("mm"),
+      diameter: convert(5 / 16, "in").to("mm"),
+    },
   },
 };
 
@@ -71,16 +79,36 @@ export const main = () => {
             rotate(
               [0, Math.PI / 2, 0],
               map(rack.screws.count, (i) =>
-                cylinder({
-                  height: rack.thickness * 2,
-                  radius: rack.screws.diameter / 2,
-                  center: [
+                translate(
+                  [
                     i * (rack.screws.spread / rack.screws.count) -
                       rack.screws.spread / 4,
                     0,
                     (rack.legs.diameter + rack.thickness) / 2,
                   ],
-                })
+                  union(
+                    cylinder({
+                      height: rack.thickness * 2,
+                      radius: rack.screws.diameter / 2,
+                    }),
+                    cylinderElliptic({
+                      height: rack.screws.head.height,
+                      startRadius: [
+                        rack.screws.diameter / 2,
+                        rack.screws.diameter / 2,
+                      ],
+                      endRadius: [
+                        rack.screws.head.diameter / 2,
+                        rack.screws.head.diameter / 2,
+                      ],
+                      center: [
+                        0,
+                        0,
+                        (rack.thickness - rack.screws.head.height) / 2,
+                      ],
+                    })
+                  )
+                )
               )
             )
           )
