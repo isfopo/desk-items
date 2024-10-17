@@ -16,9 +16,9 @@ const mount = {
   thickness: 3,
   holder: {
     reach: 30,
-    angle: Math.PI / 4,
-    length: 10,
-    width: 38,
+    angle: degToRad(45),
+    length: 14,
+    width: 42,
   },
 };
 
