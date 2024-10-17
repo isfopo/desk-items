@@ -24,17 +24,6 @@ const stand = {
   },
 };
 
-const panelGeo = extrudeLinear(
-  { height: stand.thickness },
-  roundedRectangle({
-    roundRadius: stand.screws.diameter / 2,
-    size: [
-      stand.screws.spacing.x + stand.padding,
-      stand.screws.spacing.y + stand.padding,
-    ],
-  })
-);
-
 const screwGeo = (center: Vec3) =>
   cylinder({
     radius: stand.screws.diameter / 2,
@@ -65,6 +54,20 @@ const screwsGeo = [
   ]),
 ];
 
+const panelGeo = subtract(
+  extrudeLinear(
+    { height: stand.thickness },
+    roundedRectangle({
+      roundRadius: stand.screws.diameter / 2,
+      size: [
+        stand.screws.spacing.x + stand.padding,
+        stand.screws.spacing.y + stand.padding,
+      ],
+    })
+  ),
+  screwsGeo
+);
+
 const mountGeo = roundedCuboid({
   roundRadius: stand.screws.diameter / 2,
   size: [
@@ -76,5 +79,5 @@ const mountGeo = roundedCuboid({
 });
 
 export const main = () => {
-  return subtract(union(panelGeo, mountGeo), screwsGeo);
+  return union(panelGeo, mountGeo);
 };
