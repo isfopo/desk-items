@@ -1,11 +1,20 @@
 import { Vec3 } from "@jscad/modeling/src/maths/types";
-import { subtract } from "@jscad/modeling/src/operations/booleans";
+import { subtract, union } from "@jscad/modeling/src/operations/booleans";
 import { extrudeLinear } from "@jscad/modeling/src/operations/extrusions";
-import { cylinder, roundedRectangle } from "@jscad/modeling/src/primitives";
+import {
+  cylinder,
+  roundedCuboid,
+  roundedRectangle,
+} from "@jscad/modeling/src/primitives";
 
 const stand = {
   thickness: 10,
   padding: 20,
+  mount: {
+    height: 50,
+    width: 50,
+    thickness: 30,
+  },
   screws: {
     diameter: 5,
     spacing: {
@@ -56,6 +65,16 @@ const screwsGeo = [
   ]),
 ];
 
+const mountGeo = roundedCuboid({
+  roundRadius: stand.screws.diameter / 2,
+  size: [
+    stand.mount.width,
+    stand.mount.height + stand.thickness,
+    stand.mount.thickness,
+  ],
+  center: [0, 0, (stand.mount.thickness + stand.thickness) / 2],
+});
+
 export const main = () => {
-  return subtract(panelGeo, screwsGeo);
+  return subtract(union(panelGeo, mountGeo), screwsGeo);
 };
