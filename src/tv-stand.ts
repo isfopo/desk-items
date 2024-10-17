@@ -35,7 +35,12 @@ const screwGeo = (center: Vec3) =>
 
 const screwsGeo = [
   screwGeo([
-    -stand.screws.spacing.x / 2,
+    stand.screws.spacing.x / 2,
+    stand.screws.spacing.y / 2,
+    stand.thickness / 2,
+  ]),
+  screwGeo([
+    stand.screws.spacing.x / 2,
     -stand.screws.spacing.y / 2,
     stand.thickness / 2,
   ]),
@@ -46,12 +51,7 @@ const screwsGeo = [
   ]),
   screwGeo([
     -stand.screws.spacing.x / 2,
-    -stand.screws.spacing.y / 2,
-    stand.thickness / 2,
-  ]),
-  screwGeo([
-    -stand.screws.spacing.x / 2,
-    -stand.screws.spacing.y / 2,
+    stand.screws.spacing.y / 2,
     stand.thickness / 2,
   ]),
 ];
