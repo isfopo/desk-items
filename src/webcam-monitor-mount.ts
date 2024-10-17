@@ -10,8 +10,8 @@ import { rotate } from "@jscad/modeling/src/operations/transforms";
 const TAU = 2 * Math.PI;
 
 const mount = {
-  height: 30,
-  diameter: 47,
+  height: 48,
+  diameter: 48,
   opening: degToRad(90),
   thickness: 3,
   holder: {
@@ -22,63 +22,62 @@ const mount = {
   },
 };
 
+const arcPoints = arc({
+  radius: mount.diameter / 2,
+  startAngle: mount.opening / 2,
+  endAngle: TAU - mount.opening / 2,
+});
+
+const mountOffset = -mount.diameter / 2 - mount.thickness - mount.holder.reach;
+
+const holderPoints = fromPoints(
+  { closed: true },
+  rotatePoints(
+    [
+      [mountOffset, -mount.holder.width / 2],
+      [mountOffset + -mount.holder.length, -mount.holder.width / 2],
+      [mountOffset + -mount.holder.length, mount.holder.width / 2],
+      [mountOffset, mount.holder.width / 2],
+    ],
+    {
+      angle: -mount.holder.angle,
+      origin: [0, -(mountOffset + mount.holder.length / 2)],
+    }
+  )
+);
+
+const bracePoints = {
+  left: fromPoints({ closed: false }, [
+    [
+      holderPoints.points[2][0] + mount.thickness / 2,
+      holderPoints.points[2][1] + mount.thickness / 2,
+    ],
+    [0, mount.diameter / 2 + mount.thickness / 2],
+  ]),
+  right: fromPoints({ closed: false }, [
+    [
+      holderPoints.points[0][0] + mount.thickness / 2,
+      holderPoints.points[0][1] - mount.thickness / 2,
+    ],
+    [0, -mount.diameter / 2 + -mount.thickness / 2],
+  ]),
+  middle: fromPoints({ closed: false }, [
+    [
+      holderPoints.points[3][0] + mount.thickness / 2,
+      holderPoints.points[3][1] - mount.thickness / 2,
+    ],
+    [-mount.diameter / 2 + -mount.thickness / 2, 0],
+  ]),
+  otherMiddle: fromPoints({ closed: false }, [
+    [
+      holderPoints.points[0][0] + mount.thickness / 2,
+      holderPoints.points[0][1] - mount.thickness / 2,
+    ],
+    [-mount.diameter / 2 + -mount.thickness / 2, 0],
+  ]),
+};
+
 export const main = () => {
-  const arcPoints = arc({
-    radius: mount.diameter / 2,
-    startAngle: mount.opening / 2,
-    endAngle: TAU - mount.opening / 2,
-  });
-
-  const mountOffset =
-    -mount.diameter / 2 - mount.thickness - mount.holder.reach;
-
-  const holderPoints = fromPoints(
-    { closed: true },
-    rotatePoints(
-      [
-        [mountOffset, -mount.holder.width / 2],
-        [mountOffset + -mount.holder.length, -mount.holder.width / 2],
-        [mountOffset + -mount.holder.length, mount.holder.width / 2],
-        [mountOffset, mount.holder.width / 2],
-      ],
-      {
-        angle: -mount.holder.angle,
-        origin: [0, -(mountOffset + mount.holder.length / 2)],
-      }
-    )
-  );
-
-  const bracePoints = {
-    left: fromPoints({ closed: false }, [
-      [
-        holderPoints.points[2][0] + mount.thickness / 2,
-        holderPoints.points[2][1] + mount.thickness / 2,
-      ],
-      [0, mount.diameter / 2 + mount.thickness / 2],
-    ]),
-    right: fromPoints({ closed: false }, [
-      [
-        holderPoints.points[0][0] + mount.thickness / 2,
-        holderPoints.points[0][1] - mount.thickness / 2,
-      ],
-      [0, -mount.diameter / 2 + -mount.thickness / 2],
-    ]),
-    middle: fromPoints({ closed: false }, [
-      [
-        holderPoints.points[3][0] + mount.thickness / 2,
-        holderPoints.points[3][1] - mount.thickness / 2,
-      ],
-      [-mount.diameter / 2 + -mount.thickness / 2, 0],
-    ]),
-    otherMiddle: fromPoints({ closed: false }, [
-      [
-        holderPoints.points[0][0] + mount.thickness / 2,
-        holderPoints.points[0][1] - mount.thickness / 2,
-      ],
-      [-mount.diameter / 2 + -mount.thickness / 2, 0],
-    ]),
-  };
-
   return union(
     extrudeLinear(
       { height: mount.height },
