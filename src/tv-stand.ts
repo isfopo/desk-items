@@ -12,22 +12,22 @@ import {
 import { bolt } from "jscad-threadlib";
 
 const stand = {
-  thickness: 10,
-  padding: 20,
+  thickness: 8,
+  padding: 10,
   mount: {
-    height: 50,
+    height: 60,
     width: 50,
-    thickness: 30,
+    thickness: 25,
     thread: {
       thread: "28-UN-5/8-ext",
-      turns: 20,
+      turns: 30,
     },
   },
   screws: {
     diameter: 5,
     spacing: {
-      x: 150,
-      y: 100,
+      x: 99,
+      y: 99,
     },
   },
 };
