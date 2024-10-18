@@ -81,17 +81,20 @@ const standThread = translate(
   rotate([Math.PI / 2, 0, 0], bolt(stand.mount.thread))
 );
 
-const mountGeo = subtract(
-  roundedCuboid({
-    roundRadius: stand.screws.diameter / 2,
-    size: [
-      stand.mount.width,
-      stand.mount.height,
-      stand.mount.thickness + stand.thickness,
-    ],
-    center: [0, 0, stand.mount.thickness / 2 + stand.thickness],
-  }),
-  standThread as Geom3
+const mountGeo = translate(
+  [0, (stand.screws.spacing.y + stand.padding - stand.mount.height) / 2, 0],
+  subtract(
+    roundedCuboid({
+      roundRadius: stand.screws.diameter / 2,
+      size: [
+        stand.mount.width,
+        stand.mount.height,
+        stand.mount.thickness + stand.thickness,
+      ],
+      center: [0, 0, stand.mount.thickness / 2 + stand.thickness],
+    }),
+    standThread as Geom3
+  )
 );
 
 export const main = () => {
