@@ -16,7 +16,7 @@ const mount = {
   opening: degToRad(120),
   thickness: 3,
   holder: {
-    reach: 64,
+    reach: 64, // 40 + diameter / 2
     angle: degToRad(0),
     length: 14,
     width: 42,
