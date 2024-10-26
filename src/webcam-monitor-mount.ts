@@ -6,17 +6,18 @@ import { degToRad } from "@jscad/modeling/src/utils";
 import { outline, rotatePoints } from "./helpers";
 import { union } from "@jscad/modeling/src/operations/booleans";
 import { rotate } from "@jscad/modeling/src/operations/transforms";
+import {} from "@jscad/modeling/src/maths/utils";
 
 const TAU = 2 * Math.PI;
 
 const mount = {
   height: 48,
   diameter: 48,
-  opening: degToRad(90),
+  opening: degToRad(120),
   thickness: 3,
   holder: {
-    reach: 30,
-    angle: degToRad(45),
+    reach: 64,
+    angle: degToRad(0),
     length: 14,
     width: 42,
   },
@@ -28,20 +29,18 @@ const arcPoints = arc({
   endAngle: TAU - mount.opening / 2,
 });
 
-const mountOffset = -mount.diameter / 2 - mount.thickness - mount.holder.reach;
-
 const holderPoints = fromPoints(
   { closed: true },
   rotatePoints(
     [
-      [mountOffset, -mount.holder.width / 2],
-      [mountOffset + -mount.holder.length, -mount.holder.width / 2],
-      [mountOffset + -mount.holder.length, mount.holder.width / 2],
-      [mountOffset, mount.holder.width / 2],
+      [-mount.holder.reach, -mount.holder.width / 2],
+      [-mount.holder.reach + -mount.holder.length, -mount.holder.width / 2],
+      [-mount.holder.reach + -mount.holder.length, mount.holder.width / 2],
+      [-mount.holder.reach, mount.holder.width / 2],
     ],
     {
       angle: -mount.holder.angle,
-      origin: [0, -(mountOffset + mount.holder.length / 2)],
+      origin: [0, 0],
     }
   )
 );
@@ -59,7 +58,10 @@ const bracePoints = {
       holderPoints.points[0][0] + mount.thickness / 2,
       holderPoints.points[0][1] - mount.thickness / 2,
     ],
-    [0, -mount.diameter / 2 + -mount.thickness / 2],
+    [
+      -(Math.PI * mount.holder.angle),
+      -mount.diameter / 2 + -mount.thickness / 2,
+    ],
   ]),
   middle: fromPoints({ closed: false }, [
     [
